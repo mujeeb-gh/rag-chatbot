@@ -1,3 +1,4 @@
+import time
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders.csv_loader import CSVLoader
@@ -18,9 +19,12 @@ csv_path = "data/sub_chunk_kb_acl-100k.csv"
 loader=CSVLoader(csv_path)
 docs = loader.load()
 text_splitter=RecursiveCharacterTextSplitter(chunk_size=1000,chunk_overlap=200)
-final_documents=text_splitter.split_documents(docs[:50])
+final_documents=text_splitter.split_documents(docs)
+
+start=time.process_time()
 # find out if langchain's implementation of faiss uses HNSW
 index=FAISS.from_documents(final_documents,embeddings)
+print(f"Time to embed and index {len(docs)} chunnks:",time.process_time()-start)
 
 index.save_local("faiss_index")
 

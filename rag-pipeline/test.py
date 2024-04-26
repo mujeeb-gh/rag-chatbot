@@ -1,44 +1,36 @@
 # ------- THIS SCRIPT IS FOR TESTING MODIFICATIONS ON app.py -------
 
-
 import streamlit as st
 import os
 from langchain_groq import ChatGroq
-from langchain_community.document_loaders.csv_loader import CSVLoader
-# from langchain.embeddings import OllamaEmbeddings
-# from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.embeddings import HuggingFaceEmbeddings
-
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains import create_retrieval_chain
 from langchain_community.vectorstores import FAISS
 import time
 from dotenv import load_dotenv
-load_dotenv()
+
+load_dotenv('myenv.env')
 
 ## load the Groq API key
-groq_api_key=os.environ['GROQ_API_KEY']
+groq_api_key=os.getenv('GROQ_API_KEY')
 
 model_name = "sentence-transformers/all-mpnet-base-v2"
 model_kwargs = {'device': 'cpu'}
 encode_kwargs = {'normalize_embeddings': False}
-hf = HuggingFaceEmbeddings(
+embeddings = HuggingFaceEmbeddings(
     model_name=model_name,
     model_kwargs=model_kwargs,
     encode_kwargs=encode_kwargs
 )
 
-if "vector" not in st.session_state:
-    st.session_state.embeddings= hf
-    st.session_state.loader=CSVLoader("data/sub_chunk_kb_acl-100k.csv")
-    st.session_state.docs=st.session_state.loader.load()
-    st.session_state.text_splitter=RecursiveCharacterTextSplitter(chunk_size=1000,chunk_overlap=200)
-    st.session_state.final_documents=st.session_state.text_splitter.split_documents(st.session_state.docs[:50])    
-    st.session_state.vectors=FAISS.from_documents(st.session_state.final_documents,st.session_state.embeddings)
+index_path= 'faiss_index'
 
-st.title("ChatGroq Demo")
+if "vector" not in st.session_state: 
+    st.session_state.index = FAISS.load_local(index_path, embeddings, allow_dangerous_deserialization=True)
+    
+st.title("RAG Chatbot Demo")
 llm=ChatGroq(groq_api_key=groq_api_key,
              model_name="mixtral-8x7b-32768")
 
@@ -54,7 +46,7 @@ Questions:{input}
 """
 )
 document_chain = create_stuff_documents_chain(llm, prompt)
-retriever = st.session_state.vectors.as_retriever()
+retriever = st.session_state.index.as_retriever()
 retrieval_chain = create_retrieval_chain(retriever, document_chain)
 
 prompt=st.text_input("Input you prompt here")

@@ -1,3 +1,6 @@
 myenv
 myenv.env
 .env
+/faiss_index
+/chroma_vectorstore
+rag_cohere/__pycache__

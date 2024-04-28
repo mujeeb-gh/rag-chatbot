@@ -1,6 +1,9 @@
 myenv
 myenv.env
+<<<<<<< HEAD
 .env
 /faiss_index
 /chroma_vectorstore
 rag_cohere/__pycache__
+=======
+>>>>>>> 4750db6592cde0a09e06425c56fcaa5fe8ce31be

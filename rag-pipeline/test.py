@@ -34,6 +34,7 @@ st.title("RAG Chatbot Demo")
 llm=ChatGroq(groq_api_key=groq_api_key,
              model_name="mixtral-8x7b-32768")
 
+<<<<<<< HEAD
 def needs_retrieval(prompt, llm):
   """
   Classifies user intent and determines if retrieval is needed.
@@ -60,6 +61,8 @@ def needs_retrieval(prompt, llm):
     return False  # No retrieval for open ended queries
     
 
+=======
+>>>>>>> 4750db6592cde0a09e06425c56fcaa5fe8ce31be
 prompt=ChatPromptTemplate.from_template(
 """
 Answer the questions based on the provided context only.
@@ -78,6 +81,7 @@ retrieval_chain = create_retrieval_chain(retriever, document_chain)
 prompt=st.text_input("Input you prompt here")
 
 if prompt:
+<<<<<<< HEAD
     retrieve = needs_retrieval(prompt, llm)
     if retrieve:
         start=time.process_time()
@@ -99,3 +103,16 @@ if prompt:
         
         
         
+=======
+    start=time.process_time()
+    response=retrieval_chain.invoke({"input":prompt})
+    print("Response time :",time.process_time()-start)
+    st.write(response['answer'])
+
+    # With a streamlit expander
+    with st.expander("Document Similarity Search"):
+        # Find the relevant chunks
+        for i, doc in enumerate(response["context"]):
+            st.write(doc.page_content)
+            st.write("--------------------------------")
+>>>>>>> 4750db6592cde0a09e06425c56fcaa5fe8ce31be

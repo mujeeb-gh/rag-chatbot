@@ -19,5 +19,10 @@ def retrieve_context(query: str, n_docs: int):
   )
   return retrieved_docs['documents'][0]
 
-retrieved_docs = retrieve_context("What is tvshow", 5)
+def classify_intent():
+  pass
+
+
+# retrieved_docs = retrieve_context("What is tvshow", 5)
 # print(retrieved_docs[0][:len(retrieved_docs[0]) + 1])
+

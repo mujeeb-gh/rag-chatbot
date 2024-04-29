@@ -1,0 +1,23 @@
+examples,labels
+"What are the latest advancements in natural language processing?",informational
+"Can you provide information about the Transformer architecture?",informational
+"Hey, how are things going on your end?",open-ended
+"Hello",open-ended
+"Hi there! How's your day going?",open-ended
+"What's up?",open-ended
+"What is the most commonly used pre-trained language model?",factual
+"Can you explain the difference between tokenization and stemming?",factual
+"Hi there! How's your day going?",open-ended
+"Hello! What have you been up to lately?",open-ended
+"Hey, how are things going on your end?",open-ended
+"How can I improve my golf swing?",out of scope
+"What are the best restaurants in New York City?",out of scope
+"How do I perform a discectomy?",out of scope
+"What is the Retrieve and Generate (RAG) framework and how does it work?",informational
+"What are the latest advancements in large-scale pre-trained language models?",informational
+"What are the limitations of current state-of-the-art language models in NLP research?",informational
+"What are the best practices for fine-tuning pre-trained language models for specific tasks?",informational
+"What evaluation metrics are used to assess the performance of language models in NLP tasks?",factual
+"What are some common challenges in machine translation research?",factual
+"What standard methods are used for named entity recognition in NLP?",factual
+

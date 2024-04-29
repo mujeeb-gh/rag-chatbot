@@ -23,7 +23,7 @@ def main():
   
   # Load documents
   df = pd.read_csv(CSV_PATH)
-  df = df.head()
+  df = df.head(len(df) // 2000)
   
   # Chunk documents - the loaded document was already split into 100-word chunks
   def chunk():
@@ -31,39 +31,28 @@ def main():
   
   df_texts = df['text'].tolist()
   # Create embeddings for documents
-  def embed_and_index_documents(
-    # df_texts: List[str],
-    cohere_model: str = 'embed-english-v3.0',
-    collection_name: str = "rag_collection"
-):
-    """
-    Embeds text using a CoHere model, creates a ChromaDB collection, and adds documents to it.
-
-    Args:
-        df_texts (List[str]): List of texts to embed and add to the collection.
-        cohere_model (str): CoHere model name to use for embedding. Default is 'embed-english-v3.0'.
-        chroma_path (str): Path to the ChromaDB storage. Default is "chroma_vectorstore".
-        collection_name (str): Name of the collection to create. Default is "rag_collection".
-    """
+  def embed_documents(cohere_model: str = 'embed-english-v3.0',):
     # Embed texts using CoHere
     document_embeddings = cohere_client.embed(texts=df_texts, model=cohere_model, input_type='search_document')
+    return document_embeddings.embeddings
 
-    # Generate document IDs
-    ids = [str(i) for i in range(len(document_embeddings.embeddings))]
-
-    documents = df_texts
-
+  def index_documents(collection_name, document_embeddings):
     # Initialize ChromaDB client and create a collection
     collection = chroma_client.create_collection(name=collection_name, get_or_create=True)
 
+    # Generate document IDs
+    ids = [str(i) for i in range(len(document_embeddings))]
+
+    documents = df_texts
     # Add documents to the collection
     collection.add(
-        embeddings=document_embeddings.embeddings,
+        embeddings=document_embeddings,
         ids=ids,
         documents=documents
     )
   
-  embed_and_index_documents(cohere_model='embed-english-v3.0', collection_name='rag_collection')
+  document_embeddings = embed_documents(cohere_model='embed-english-v3.0')
+  index_documents(collection_name='rag_collection', document_embeddings=document_embeddings)
   
 if __name__ == "__main__":
   main()
